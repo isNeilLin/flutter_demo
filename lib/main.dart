@@ -1,160 +1,91 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_study/components/icon_tab.dart';
+import 'package:flutter_study/views/companies_view.dart';
+import 'package:flutter_study/views/jobs_view.dart';
+import 'package:flutter_study/views/messages_view.dart';
+import 'package:flutter_study/views/mine_view.dart';
 
-// 程序入口
-void main() => runApp(new FriendlyChatApp());
-const _name = 'Neil Lin';
-
-// 根级微件
-class FriendlyChatApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-      title: 'FriendlyChat',
-      home: new ChatScreen(),
-    );
-  }
+void main() {
+  runApp(new MaterialApp(
+    title: 'Boss直聘',
+    theme: new ThemeData(
+      primaryIconTheme: const IconThemeData(color: Colors.white),
+      brightness: Brightness.light,
+      primaryColor: new Color.fromRGBO(0, 215, 198, 1.0),
+      accentColor: Colors.cyan[300],
+    ),
+    home: new BossApp()
+  ));
 }
 
-class ChatScreen extends StatefulWidget {
+class BossApp extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() {
-    // TODO: implement createState
-    return new ChatStatefulScreen();
-  }
+  HomeState createState()=> new HomeState();
 }
 
-class ChatStatefulScreen extends State<ChatScreen> with TickerProviderStateMixin {
-  final List<ChatMessage> _messages = <ChatMessage>[];
-  final TextEditingController _textController = new TextEditingController();
-  bool _isComposing = false;
+class HomeState extends State<BossApp> with SingleTickerProviderStateMixin {
+  int _currentIndex = 0;
+  TabController _controller;
+  VoidCallback onChanged;
 
-  void _handlerSubmited(String text) {
-    _textController.clear();
-    
-    ChatMessage message = new ChatMessage(
-      text: text,
-      animationController: new AnimationController(
-        duration: new Duration(milliseconds: 300),
-        vsync: this
-      ),
-    );
-    setState((){
-      _messages.insert(0, message);
-      _isComposing = false;
-    });
-    message.animationController.forward();
-  }
-
-  void _change(String text) {
-    setState((){
-      _isComposing = text.length > 0;
-    });
+  @override
+  void initState(){
+    super.initState();
+    _controller = new TabController(initialIndex: _currentIndex,length: 4,vsync: this);
+    onChanged = () {
+      setState((){
+        _currentIndex = _controller.index;
+      });
+    };
+    _controller.addListener(onChanged);
   }
 
   @override
-  void dispose() {
-    for (ChatMessage message in _messages) {
-      message.animationController.dispose();
-    }
+  void dispose(){
+    _controller.removeListener(onChanged);
+    _controller.dispose();
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text('FriendlyChat'),
-      ),
-      body: new Column(
-        children: <Widget>[
-          new Flexible(
-            child: new ListView.builder(
-              padding: new EdgeInsets.all(8.0),
-              reverse: true,
-              itemCount: _messages.length,
-              itemBuilder: (_,index) => _messages[index],
-            ),
-          ),
-          new Divider(height: 1.0),
-          new Container(
-            decoration: new BoxDecoration(
-              color: Theme.of(context).cardColor
-            ),
-            padding: new EdgeInsets.only(left: 8.0),
-            child: _buildTextComposer(),
-          )
-        ],
-      )
-    );
-  }
-
-  Widget _buildTextComposer() {
-    return new IconTheme(
-      data: new IconThemeData(color: Theme.of(context).accentColor),
-      child: new Row(
-        children: <Widget>[
-          new Flexible(
-            child: new TextField(
-              controller: _textController,
-              style: new TextStyle(
-                fontSize: 18.0,
-                color: Colors.black,
-              ),
-              onSubmitted: _handlerSubmited,
-              onChanged: (String text) {
-                _change(text);
-              },
-              decoration: new InputDecoration.collapsed(
-                hintText: 'Send a message',
-                border: const UnderlineInputBorder(),
-              ),
-            ),
-          ),
-          new Container(
-            margin: new EdgeInsets.symmetric(horizontal: 4.0),
-            child: new IconButton(
-              icon: new Icon(Icons.send),
-              onPressed: _isComposing ?
-                () => _handlerSubmited(_textController.text) :
-                null,
-            ),
-          )
-        ],
-      )
-    );
-  }
-}
-
-class ChatMessage extends StatelessWidget {
-  ChatMessage({this.text, this.animationController});
-  final String text;
-  final AnimationController animationController;
-  @override
   Widget build(BuildContext context){
-    return new SizeTransition(
-      sizeFactor: new CurvedAnimation(
-        parent: animationController,
-        curve: Curves.easeOut
+    return new Scaffold(
+      body: new TabBarView(
+        children: <Widget>[
+          new JobTab(), new CompanyTab(), new MessageTab(), new MineTab()
+        ],
+        controller: _controller,
       ),
-      axisAlignment: 0.0,
-      child: new Container(
-        margin: const EdgeInsets.symmetric(vertical: 10.0),
-        child: new Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            new Container(
-              margin: const EdgeInsets.only(right: 16.0),
-              child: new CircleAvatar(child: new Text(_name[0]),),
+      bottomNavigationBar: new Material(
+        color: Colors.white,
+        child: new TabBar(
+          controller: _controller,
+          indicatorSize: TabBarIndicatorSize.label,
+          labelStyle: new TextStyle(fontSize: 11.0),
+          tabs: <IconTab>[
+            new IconTab(
+              icon: _currentIndex == 0 
+                    ? "assets/images/ic_main_tab_company_pre.png"
+                    : "assets/images/ic_main_tab_company_nor.png",
+              text: "职位"
             ),
-            new Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                new Text(_name,style: Theme.of(context).textTheme.subhead),
-                new Container(
-                  margin: const EdgeInsets.only(top: 5.0),
-                  child: new Text(text,style: Theme.of(context).textTheme.body1),
-                )
-              ],
+            new IconTab(
+              icon: _currentIndex == 1
+                    ? "assets/images/ic_main_tab_contacts_pre.png"
+                    : "assets/images/ic_main_tab_contacts_nor.png",
+              text: "公司"
+            ),
+            new IconTab(
+              icon: _currentIndex == 2
+                    ? "assets/images/ic_main_tab_find_pre.png"
+                    : "assets/images/ic_main_tab_find_nor.png",
+              text: "消息"
+            ),
+            new IconTab(
+              icon: _currentIndex == 3
+                    ? "assets/images/ic_main_tab_my_pre.png"
+                    : "assets/images/ic_main_tab_my_nor.png",
+              text: "我的"
             )
           ],
         ),

@@ -29,7 +29,15 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-   - images/banner.jpg
+   - assets/images/ic_main_tab_company_nor.png
+   - assets/images/ic_main_tab_company_pre.png
+   - assets/images/ic_main_tab_contacts_nor.png
+   - assets/images/ic_main_tab_contacts_pre.png
+   - assets/images/ic_main_tab_find_nor.png
+   - assets/images/ic_main_tab_find_pre.png
+   - assets/images/ic_main_tab_my_nor.png
+   - assets/images/ic_main_tab_my_pre.png
+
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -57,3 +65,21 @@ flutter:
   #
   # For details regarding fonts from package dependencies, 
   # see https://flutter.io/custom-fonts/#from-packages
+  fonts:
+    - family: fontello
+      fonts:
+        - asset: assets/fonts/fontello.ttf
+    - family: Dosis
+      fonts:
+        - asset: assets/fonts/Dosis/Dosis-Light.ttf
+          weight: 200
+        - asset: assets/fonts/Dosis/Dosis-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Dosis/Dosis-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Dosis/Dosis-Semibold.ttf
+          weight: 600
+        - asset: assets/fonts/Dosis/Dosis-Bold.ttf
+          weight: 800
+        - asset: assets/fonts/Dosis/Dosis-ExtraBold.ttf
+          weight: 900
