@@ -113,7 +113,7 @@ class CompanyDetailState extends State<CompanyDetail> with TickerProviderStateMi
           ),
           new Positioned(
               left: 10.0,
-              top: 10.0,
+              top: 20.0,
               child: new BackButton(color: Colors.white,)
           )
         ],
