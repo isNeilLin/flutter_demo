@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_study/models/company.dart';
+import 'package:flutter_study/components/company_list_item.dart';
+import 'package:flutter_study/views/company/company_detail.dart';
 
 class CompanyTab extends StatefulWidget {
   @override
@@ -60,9 +62,9 @@ class CompanyList extends State<CompanyTab> {
     Company company = _companies[index];
     return new GestureDetector(
       onTap: (){
-        print('taped ${company.name}');
+        navCompanyDetail(company, index);
       },
-      child: new Text(company.name),
+      child: new CompanyListItem(company),
     );
   }
 
@@ -152,5 +154,23 @@ class CompanyList extends State<CompanyTab> {
           }
       """);
     }); 
+  }
+
+  void navCompanyDetail(Company company, int index){
+    Navigator.of(context).push(new PageRouteBuilder(
+        pageBuilder: (BuildContext context, _, __){
+          return new CompanyDetail(company);
+        },
+        opaque: true,
+        transitionsBuilder: (_, Animation<double> animation,__, Widget child ){
+          return new FadeTransition(
+            opacity: animation,
+            child: new SlideTransition(position: new Tween(
+              begin: const Offset(0.0, 1.0),
+              end: Offset.zero
+            ).animate(animation),child: child,),
+          );
+        }
+    ));
   }
 }
